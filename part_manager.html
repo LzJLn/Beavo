@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Beavo – Manager & Gamification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #39444A;
+            --bg-card: #465057;
+            --primary: #2E9898;
+            --primary-dark: #247373;
+            --text-main: #ffffff;
+            --text-muted: #b0b8bf;
+            --danger: #ef4444;
+            --success: #10b981;
+            --score-gold: #fbbf24;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: rgba(30, 35, 40, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--primary-dark);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-container img {
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .user-stats {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .score-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid var(--score-gold);
+            color: var(--score-gold);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+        }
+
+        /* --- LOGIN --- */
+        #loginBox {
+            max-width: 400px;
+            margin: 80px auto;
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            border: 1px solid var(--primary-dark);
+        }
+
+        .input-group { margin-bottom: 20px; }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-dark);
+            border: 1px solid #5a656e;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        button.secondary {
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text-muted);
+        }
+        button.secondary:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        /* --- MAIN UI --- */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .top-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .btn-add {
+            background: var(--success);
+            width: auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-add:hover { background: #059669; }
+
+        /* --- TABLE --- */
+        .parts-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .parts-table th {
+            text-align: left;
+            padding: 0 20px 10px;
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .parts-table tbody tr {
+            background: var(--bg-card);
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .parts-table tbody tr:hover {
+            transform: scale(1.005);
+            background: #4f5a63;
+            border-left: 4px solid var(--primary);
+        }
+
+        .parts-table td {
+            padding: 18px 20px;
+        }
+
+        .parts-table td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+        .parts-table td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+
+        .priority-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .prio-Haute { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid #ef4444; }
+        .prio-Moyenne { background: rgba(245, 158, 11, 0.2); color: #fcd34d; border: 1px solid #f59e0b; }
+        .prio-Basse { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid #10b981; }
+
+        /* --- MODALS (Generic) --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.show { opacity: 1; }
+
+        .modal-content {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid #5a656e;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-overlay.show .modal-content { transform: translateY(0); }
+
+        .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .modal-header h2 { margin: 0; color: var(--primary); }
+
+        /* --- TASK SECTION (Inside Detail) --- */
+        .task-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #5a656e;
+        }
+        
+        .task-input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .task-item {
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid var(--text-muted);
+            transition: 0.2s;
+        }
+
+        .task-item.completed {
+            border-left-color: var(--success);
+            opacity: 0.6;
+        }
+
+        .task-item.completed .task-desc {
+            text-decoration: line-through;
+        }
+
+        .task-check {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--success);
+        }
+
+        .task-pts {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--score-gold);
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Form Grid for Add Part */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="https://lzjln.github.io/Beavo/website_images/img/beavo_logo_wletter.png" alt="Beavo">
+        </div>
+        <div class="user-stats" id="userInfo" style="display:none;">
+            <div class="score-box">
+                <i class="fas fa-trophy"></i>
+                <span id="userScoreDisplay">0 XP</span>
+            </div>
+            <button onclick="logout()" style="width:auto; padding: 8px 16px; background:transparent; border:1px solid var(--danger); color:var(--danger);">
+                <i class="fas fa-power-off"></i>
+            </button>
+        </div>
+    </header>
+
+    <div id="loginBox">
+        <h2 style="color: white;">Connexion</h2>
+        <div class="input-group"><input id="email" type="email" placeholder="Email" /></div>
+        <div class="input-group"><input id="password" type="password" placeholder="Mot de passe" /></div>
+        <button onclick="login()">Entrer</button>
+        <p id="loginError" style="color:var(--danger); margin-top:15px;"></p>
+    </div>
+
+    <div id="main" class="container" style="display:none;">
+
+        <div class="top-controls">
+            <div class="filters">
+                <input type="text" id="search" placeholder="Rechercher..." />
+                <select id="categoryFilter"><option value="">Catégories</option></select>
+                <select id="priorityFilter">
+                    <option value="">Priorités</option>
+                    <option value="Haute">Haute</option>
+                    <option value="Moyenne">Moyenne</option>
+                    <option value="Basse">Basse</option>
+                </select>
+            </div>
+            <button class="btn-add" onclick="openAddPartModal()">
+                <i class="fas fa-plus"></i> Nouvelle Pièce
+            </button>
+        </div>
+
+        <table class="parts-table">
+            <thead>
+                <tr>
+                    <th onclick="sortParts('name')">Nom <i class="fas fa-sort"></i></th>
+                    <th onclick="sortParts('reference')">Réf <i class="fas fa-sort"></i></th>
+                    <th onclick="sortParts('priority')">Prio <i class="fas fa-sort"></i></th>
+                </tr>
+            </thead>
+            <tbody id="partsListBody"></tbody>
+        </table>
+    </div>
+
+    <div id="addPartModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Créer une pièce</h2>
+            </div>
+            <div class="form-grid">
+                <input id="newPartName" placeholder="Nom de la pièce" />
+                <input id="newPartRef" placeholder="Référence" />
+                <select id="newPartPrio">
+                    <option value="Haute">Priorité Haute</option>
+                    <option value="Moyenne" selected>Priorité Moyenne</option>
+                    <option value="Basse">Priorité Basse</option>
+                </select>
+                <input id="newPartCat" placeholder="Catégorie (ex: Moteur)" />
+                <input id="newPartMat" placeholder="Matériau" />
+                <input id="newPartQty" type="number" placeholder="Quantité" />
+            </div>
+            <textarea id="newPartDesc" rows="3" placeholder="Description technique..." style="margin-top:15px;"></textarea>
+            
+            <div style="margin-top:20px; display:flex; gap:10px;">
+                <button onclick="submitNewPart()">Créer</button>
+                <button class="secondary" onclick="closeAddPartModal()">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 id="detailName"></h2>
+                    <small id="detailRef" style="color:var(--primary); font-family:monospace;"></small>
+                </div>
+                <div id="detailPrioBadge"></div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
+                <div><small>Catégorie:</small> <span id="detailCat"></span></div>
+                <div><small>Matériau:</small> <span id="detailMat"></span></div>
+                <div><small>Qté:</small> <span id="detailQty"></span></div>
+            </div>
+            <p id="detailDesc" style="color:#d1d5db; font-size:14px; margin-bottom:20px;"></p>
+
+            <div class="task-section">
+                <h3 style="color:var(--score-gold); font-size:16px;">
+                    <i class="fas fa-tasks"></i> Tâches & Validation
+                </h3>
+                
+                <div class="task-input-row">
+                    <input type="text" id="newTaskDesc" placeholder="Nouvelle tâche..." style="flex:2;">
+                    <input type="number" id="newTaskVal" placeholder="Pts (x)" style="flex:1;" value="10">
+                    <button onclick="addTaskToCurrentPart()" style="width:auto; padding:0 15px;">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+
+                <ul id="taskList" class="task-list"></ul>
+            </div>
+
+            <button onclick="closeDetailModal()" class="secondary" style="margin-top:20px;">Fermer</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVgEvQsNhq22DCmIreuvb1IJxNzbv-cRs",
+            authDomain: "designer-plan.firebaseapp.com",
+            databaseURL: "https://designer-plan-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "designer-plan"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        let userId = null;
+        let partsData = {};
+        let currentPartId = null; // Pour savoir quelle part est ouverte dans le modal
+
+        // --- AUTH & SCORE ---
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                userId = user.uid;
+                loadUserData(userId);
+                document.getElementById("loginBox").style.display = "none";
+                document.getElementById("main").style.display = "block";
+                document.getElementById("userInfo").style.display = "flex";
+            } else {
+                document.getElementById("loginBox").style.display = "block";
+                document.getElementById("main").style.display = "none";
+                document.getElementById("userInfo").style.display = "none";
+            }
+        });
+
+        function login() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            auth.signInWithEmailAndPassword(email, password).catch(err => {
+                document.getElementById("loginError").innerText = err.message;
+            });
+        }
+        function logout() { auth.signOut(); }
+
+        function loadUserData(uid) {
+            // Load Parts
+            db.ref("users/" + uid + "/parts").on("value", snapshot => {
+                partsData = snapshot.val() || {};
+                renderParts();
+                // Si une modale détail est ouverte, rafraichir ses tâches
+                if(currentPartId && document.getElementById("detailModal").classList.contains("show")) {
+                    renderTasksForPart(currentPartId);
+                }
+            });
+
+            // Load Score
+            db.ref("users/" + uid + "/score").on("value", snapshot => {
+                const score = snapshot.val() || 0;
+                document.getElementById("userScoreDisplay").innerText = score + " XP";
+            });
+        }
+
+        // --- PARTS CRUD ---
+        function openAddPartModal() {
+            document.getElementById("addPartModal").style.display = "flex";
+            setTimeout(() => document.getElementById("addPartModal").classList.add('show'), 10);
+        }
+        function closeAddPartModal() {
+            document.getElementById("addPartModal").classList.remove('show');
+            setTimeout(() => document.getElementById("addPartModal").style.display = "none", 300);
+        }
+
+        function submitNewPart() {
+            const newPart = {
+                name: document.getElementById("newPartName").value,
+                reference: document.getElementById("newPartRef").value,
+                priority: document.getElementById("newPartPrio").value,
+                category: document.getElementById("newPartCat").value,
+                material: document.getElementById("newPartMat").value,
+                quantity: document.getElementById("newPartQty").value,
+                description: document.getElementById("newPartDesc").value,
+                tasks: {} // Init empty tasks
+            };
+
+            if(!newPart.name) return alert("Le nom est obligatoire");
+
+            db.ref("users/" + userId + "/parts").push(newPart).then(() => {
+                closeAddPartModal();
+                // Reset form
+                document.getElementById("newPartName").value = "";
+                document.getElementById("newPartRef").value = "";
+            });
+        }
+
+        function renderParts() {
+            const tbody = document.getElementById("partsListBody");
+            tbody.innerHTML = "";
+            
+            // Logique de tri simple
+            const list = [];
+            for(let id in partsData) list.push({...partsData[id], id});
+            
+            // (Tu peux réintégrer la logique de tri/filtre avancée ici si besoin)
+
+            list.forEach(p => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><b>${p.name}</b></td>
+                    <td style="font-family:monospace; color:var(--primary);">${p.reference}</td>
+                    <td><span class="priority-badge prio-${p.priority}">${p.priority}</span></td>
+                `;
+                tr.onclick = () => showDetail(p.id);
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- DETAIL & TASKS LOGIC ---
+        function showDetail(id) {
+            currentPartId = id;
+            const p = partsData[id];
+            
+            document.getElementById("detailName").innerText = p.name;
+            document.getElementById("detailRef").innerText = p.reference;
+            document.getElementById("detailCat").innerText = p.category || '-';
+            document.getElementById("detailMat").innerText = p.material || '-';
+            document.getElementById("detailQty").innerText = p.quantity || '-';
+            document.getElementById("detailDesc").innerText = p.description || 'Pas de description.';
+            
+            const badge = document.getElementById("detailPrioBadge");
+            badge.className = `priority-badge prio-${p.priority}`;
+            badge.innerText = p.priority;
+
+            renderTasksForPart(id);
+
+            const modal = document.getElementById("detailModal");
+            modal.style.display = "flex";
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeDetailModal() {
+            currentPartId = null;
+            const modal = document.getElementById("detailModal");
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = "none", 300);
+        }
+
+        // --- TASK MANAGER ---
+        function addTaskToCurrentPart() {
+            const desc = document.getElementById("newTaskDesc").value;
+            const val = parseInt(document.getElementById("newTaskVal").value) || 0;
+
+            if(!desc) return;
+
+            const newTask = {
+                description: desc,
+                value: val,
+                done: false
+            };
+
+            db.ref(`users/${userId}/parts/${currentPartId}/tasks`).push(newTask);
+            document.getElementById("newTaskDesc").value = "";
+        }
+
+        function renderTasksForPart(partId) {
+            const listEl = document.getElementById("taskList");
+            listEl.innerHTML = "";
+            
+            const tasks = partsData[partId].tasks || {};
+
+            if(Object.keys(tasks).length === 0) {
+                listEl.innerHTML = "<li style='color:gray; font-style:italic;'>Aucune tâche.</li>";
+                return;
+            }
+
+            for(let taskId in tasks) {
+                const t = tasks[taskId];
+                const li = document.createElement("li");
+                li.className = `task-item ${t.done ? 'completed' : ''}`;
+                
+                li.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <input type="checkbox" class="task-check" 
+                               onchange="toggleTask('${partId}', '${taskId}', this.checked, ${t.value})" 
+                               ${t.done ? 'checked' : ''}>
+                        <span class="task-desc">${t.description}</span>
+                    </div>
+                    <span class="task-pts">+${t.value} XP</span>
+                `;
+                listEl.appendChild(li);
+            }
+        }
+
+        function toggleTask(partId, taskId, isChecked, points) {
+            // 1. Update task status
+            db.ref(`users/${userId}/parts/${partId}/tasks/${taskId}`).update({ done: isChecked });
+
+            // 2. Update User Score (Atomic Transaction)
+            const scoreRef = db.ref(`users/${userId}/score`);
+            scoreRef.transaction((currentScore) => {
+                if (currentScore === null) currentScore = 0;
+                return isChecked ? currentScore + points : currentScore - points;
+            });
+        }
+    </script>
+</body>
+</html>

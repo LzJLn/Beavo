@@ -1,702 +1,289 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BEAVO - Assistant IA pour la Conception Produit</title>
+    <title>Beavo - Manager & Gamification</title>
     <style>
-        /* 🎨 CHARTE GRAPHIQUE */
         :root {
-            --color-bg-primary: #FFFFFF; /* fond principal – blanc pur */
-            --color-bg-secondary: #F2F7F7; /* fond secondaire – gris très clair tirant sur le vert d’eau */
-            --color-bg-card: #E6F1F1; /* fond de carte – léger contraste avec le fond */
-            --color-accent: #2E9898; /* accent principal – vert sarcelle */
-            --color-accent-hover: #3db3b3; /* accent au survol – plus lumineux */
-            --color-accent-dark: #257878; /* accent foncé – pour le contraste */
-            --color-text-light: #39444A; /* texte principal – noir adouci */
-            --color-text-dark: #5A6B6B; /* texte secondaire – gris verdâtre doux */
-            --color-border: rgba(46, 152, 152, 0.25); /* bordures – ton coordonné, semi-transparent */
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --text-color: #333;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            color: var(--color-text-light);
-            line-height: 1.7;
-            background: var(--color-bg-primary);
+            line-height: 1.6;
+            color: var(--text-color);
         }
 
         /* Navigation */
         nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: var(--color-bg-primary);
-            backdrop-filter: blur(10px);
-            padding: 1.5rem 0;
-            z-index: 1000;
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 3rem;
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--color-accent);
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
-
-        .nav-links {
+        .logo-container {
             display: flex;
-            gap: 2.5rem;
-            list-style: none;
             align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--primary-color);
         }
 
-            .nav-links a {
-                color: var(--color-text-light);
-                text-decoration: none;
-                font-size: 0.95rem;
-                font-weight: 500;
-                transition: color 0.3s;
-            }
-
-                .nav-links a:hover {
-                    color: var(--color-accent);
-                }
-
-        .nav-cta {
-            background: var(--color-accent);
-            color: white !important;
-            padding: 0.6rem 1.5rem;
-            border-radius: 8px;
-            transition: all 0.3s;
+        .logo-img {
+            height: 40px;
         }
 
-            .nav-cta:hover {
-                background: var(--color-accent-hover);
-                transform: translateY(-1px);
-            }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            margin-left: 2rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .btn-login {
+            background-color: var(--primary-color);
+            color: var(--white) !important;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+        }
+
+        .btn-login:hover {
+            background-color: #1a252f;
+        }
 
         /* Hero Section */
         .hero {
-            padding: 140px 3rem 100px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .hero-content h1 {
-            font-size: 3.5rem;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-        }
-
-        .hero-content .highlight {
-            color: var(--color-accent);
-        }
-
-        .hero-content p {
-            font-size: 1.2rem;
-            color: var(--color-text-dark);
-            margin-bottom: 2rem;
-            line-height: 1.8;
-        }
-
-        .hero-buttons {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 5rem 5%;
+            text-align: center;
             display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: var(--color-accent);
-            color: white;
-        }
-
-            .btn-primary:hover {
-                background: var(--color-accent-hover);
-                transform: translateY(-2px);
-                box-shadow: 0 8px 20px rgba(46, 152, 152, 0.3);
-            }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--color-text-light);
-            border: 2px solid var(--color-border);
-        }
-
-            .btn-secondary:hover {
-                border-color: var(--color-accent);
-                color: var(--color-accent);
-            }
-
-        /* Image Placeholder */
-        .image-placeholder {
-            /*background: linear-gradient(135deg, var(--color-bg-card) 0%, var(--color-bg-secondary) 100%);*/
-            border-radius: 12px;
-            padding: 2rem;
-            /*border: 1px solid var(--color-border);*/
-            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 400px;
-            position: relative;
-            overflow: hidden;
+            min-height: 80vh;
         }
 
-            .image-placeholder::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                /*background: url('data:image/svg+xml,<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" fill="none" stroke="rgba(46,152,152,0.1)" stroke-width="1"/></svg>');*/
-            }
-
-        .image-placeholder-text {
-            color: var(--color-text-dark);
-            font-size: 1rem;
-            text-align: center;
-            z-index: 1;
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
         }
 
-        .image-placeholder img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
+        .hero p {
+            font-size: 1.25rem;
+            color: #555;
+            max-width: 700px;
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--white);
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.6);
         }
 
         /* Features Section */
         .features {
-            padding: 100px 3rem;
-            max-width: 1400px;
-            margin: 0 auto;
+            padding: 5rem 5%;
+            background: var(--white);
         }
 
-        .section-header {
+        .section-title {
             text-align: center;
             margin-bottom: 4rem;
         }
 
-            .section-header h2 {
-                font-size: 2.5rem;
-                margin-bottom: 1rem;
-                font-weight: 700;
-            }
-
-            .section-header p {
-                font-size: 1.1rem;
-                color: var(--color-text-dark);
-            }
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 3rem;
-        }
-
-        .feature-item {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            align-items: center;
-            background: var(--color-bg-secondary);
-            padding: 2.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg-light);
+            padding: 2rem;
             border-radius: 10px;
-            border: 1px solid var(--color-border);
-            transition: all 0.3s;
+            text-align: center;
+            transition: transform 0.3s;
+            border: 1px solid #eee;
         }
 
-            .feature-item:hover {
-                border-color: var(--color-accent);
-                transform: translateY(-5px);
-            }
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
 
-        .feature-content h3 {
-            font-size: 1.5rem;
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .feature-card h3 {
             margin-bottom: 1rem;
-            color: var(--color-accent);
+            color: var(--primary-color);
         }
 
-        .feature-content p {
-            color: var(--color-text-dark);
-            line-height: 1.7;
+        /* Screenshot / Preview Section */
+        .preview-section {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 5rem 5%;
+            text-align: center;
         }
 
-        .feature-image {
-            background: var(--color-bg-card);
-            border-radius: 8px;
-            min-height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /*border: 1px solid var(--color-border);*/
-        }
-
-            .feature-image img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                border-radius: 8px;
-            }
-
-        /* Full Width Feature */
-        .full-feature {
-            padding: 100px 3rem;
-            background: var(--color-bg-secondary);
-        }
-
-        .full-feature-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .full-feature-content h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-        }
-
-        .full-feature-content p {
-            font-size: 1.1rem;
-            color: var(--color-text-dark);
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-        }
-
-        .feature-list {
-            list-style: none;
-            margin-top: 2rem;
-        }
-
-            .feature-list li {
-                padding: 1rem 0;
-                border-bottom: 1px solid var(--color-border);
-                color: var(--color-text-dark);
-                display: flex;
-                align-items: center;
-                gap: 1rem;
-            }
-
-                .feature-list li:last-child {
-                    border-bottom: none;
-                }
-
-                .feature-list li::before {
-                    content: '✓';
-                    color: var(--color-accent);
-                    font-weight: bold;
-                    font-size: 1.2rem;
-                }
-
-        .full-image-placeholder {
-            background: var(--color-bg-card);
-            border-radius: 12px;
-            min-height: 500px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--color-border);
-        }
-
-            .full-image-placeholder img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                border-radius: 12px;
-            }
-
-        /* Stats Section */
-        .stats {
-            padding: 80px 3rem;
-            max-width: 1400px;
+        .preview-content {
+            max-width: 800px;
             margin: 0 auto;
         }
 
         .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
         }
 
-        .stat-item {
-            text-align: center;
-            padding: 2rem;
-            background: var(--color-bg-secondary);
-            border-radius: 10px;
-            border: 1px solid var(--color-border);
+        .stat-item h4 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
         }
-
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--color-accent);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--color-text-dark);
-            font-size: 1rem;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 100px 3rem;
-            background: var(--color-bg-secondary);
-            text-align: center;
-        }
-
-        .cta-content {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-            .cta-content h2 {
-                font-size: 2.5rem;
-                margin-bottom: 1.5rem;
-                font-weight: 700;
-            }
-
-            .cta-content p {
-                font-size: 1.2rem;
-                color: var(--color-text-dark);
-                margin-bottom: 2rem;
-            }
 
         /* Footer */
         footer {
-            padding: 4rem 3rem 2rem;
-            background: var(--color-bg-primary);
-            border-top: 1px solid var(--color-border);
-        }
-
-        .footer-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 3rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-brand h3 {
-            font-size: 1.5rem;
-            color: var(--color-accent);
-            margin-bottom: 1rem;
-        }
-
-        .footer-brand p {
-            color: var(--color-text-dark);
-            line-height: 1.7;
-        }
-
-        .footer-links h4 {
-            margin-bottom: 1rem;
-            color: var(--color-text-light);
-        }
-
-        .footer-links a {
-            display: block;
-            color: var(--color-text-dark);
-            text-decoration: none;
-            margin-bottom: 0.5rem;
-            transition: color 0.3s;
-        }
-
-            .footer-links a:hover {
-                color: var(--color-accent);
-            }
-
-        .footer-bottom {
+            background: #1a252f;
+            color: #ecf0f1;
+            padding: 2rem 5%;
             text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid var(--color-border);
-            color: var(--color-text-dark);
         }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .hero-grid, .full-feature-container {
-                grid-template-columns: 1fr;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .feature-item {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .footer-container {
-                grid-template-columns: 1fr 1fr;
-            }
+        footer p {
+            opacity: 0.7;
         }
 
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .nav-container {
-                padding: 0 1.5rem;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .hero {
-                padding: 100px 1.5rem 60px;
-            }
-
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-
-            .features, .full-feature, .stats, .cta-section {
-                padding: 60px 1.5rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-container {
-                grid-template-columns: 1fr;
-            }
+            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; } /* Simplified for demo */
         }
     </style>
 </head>
 <body>
+
     <nav>
-        <div class="nav-container">
-            <a href="#" class="logo">
-                                <img src="website_images/img/beavo_logo_letters.png" alt="Home" width="180">
-            </a>
-           
-            <ul class="nav-links">
-                <li><a href="part_manager.html">Part Manager</a></li>
-                <li><a href="#features">Fonctionnalités</a></li>
-                <li><a href="#tools">Outils</a></li>
-                <li><a href="#demo" class="nav-cta">Essai gratuit</a></li>
-            </ul>
+        <div class="logo-container">
+            <img src="https://lzjln.github.io/Beavo/website_images/img/beavo_logo_wletter.png" alt="Beavo Logo" class="logo-img">
+            <span>Beavo</span>
+        </div>
+        <div class="nav-links">
+            <a href="#features">Fonctionnalités</a>
+            <a href="#gamification">Gamification</a>
+            <a href="https://sweet-voice-63e1.ulitur1.workers.dev/" class="btn-login" target="_blank">Se connecter</a>
         </div>
     </nav>
 
     <section class="hero">
-        <div class="hero-grid">
-            <div class="hero-content">
-                <h1>L'Assistant IA pour la <span class="highlight">Conception Produit</span></h1>
-                <p>BEAVO combine intelligence artificielle et outils de calcul mécanique pour accélérer votre workflow de conception. Pilotez votre projet par commande vocale.</p>
-                <div class="hero-buttons">
-                    <a href="#demo" class="btn btn-primary">Démarrer gratuitement</a>
-                    <a href="#features" class="btn btn-secondary">Découvrir</a>
-                </div>
-            </div>
-            <div class="image-placeholder">
-                <div class="image-placeholder-text">
-                    <img src="website_images/img/beavo_logo_wletter.png" alt="Description"> 
-                    <!-- <📸 Remplacez par une capture d'écran<br>de l'interface principale BEAVO> -->
-                </div>
-                <!-- <img src="URL_DE_VOTRE_IMAGE" alt="Interface BEAVO"> -->
-            </div>
-        </div>
-    </section>
-
-    <section class="stats">
-        <div class="stats-grid">
-            <div class="stat-item">
-                <div class="stat-number">10+</div>
-                <div class="stat-label">Outils de calcul</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">3x</div>
-                <div class="stat-label">Plus rapide</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">100%</div>
-                <div class="stat-label">Commande vocale</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">24/7</div>
-                <div class="stat-label">Disponible</div>
-            </div>
-        </div>
+        <h1>Transformez la gestion technique</h1>
+        <p>Beavo combine la rigueur de la gestion de projet d'ingénierie avec l'engagement de la gamification. Gérez vos références, validez vos tâches et gagnez de l'XP.</p>
+        <a href="https://sweet-voice-63e1.ulitur1.workers.dev/" class="cta-button" target="_blank">Lancer l'application</a>
     </section>
 
     <section id="features" class="features">
-        <div class="section-header">
-            <h2>Fonctionnalités Principales</h2>
-            <p>Tout ce dont vous avez besoin pour concevoir plus efficacement</p>
+        <div class="section-title">
+            <h2>Pourquoi choisir Beavo ?</h2>
+            <p>Une plateforme tout-en-un pour les managers et les équipes techniques.</p>
         </div>
+        
         <div class="features-grid">
-            <div class="feature-item">
-                <div class="feature-content">
-                    <h3>Part Manager</h3>
-                    <p>Organisez tous vos composants dans une interface intuitive. Recherchez, filtrez et gérez vos pièces en quelques secondes.</p>
-                </div>
-                <div class="feature-image">
-                    <div class="image-placeholder-text">
-                        <a href="file:///C:/Users/JuLod_000/Documents/BEAVO/0_Website/part_manager.html">
-                        <img src="website_images/Part_manager.png" alt="Part Manager">
-                        <!-- 📸 Screenshot<br>Part Manager-->
-                        </a>
-                    </div>
-                    <!-- <img src="website_images/imgPart_manager.png" alt="Part Manager"> -->
-                </div>
+            <div class="feature-card">
+                <span class="feature-icon">📂</span>
+                <h3>Organisation Structurée</h3>
+                <p>Créez ou rejoignez des organisations. Gérez vos équipes et assignez des rôles clairs (Manager, Exécuteur) en quelques clics.</p>
             </div>
 
-            <div class="feature-item">
-                <div class="feature-content">
-                    <h3>Workflow Vocal</h3>
-                    <p>Dictez vos tâches et votre progression. BEAVO enregistre automatiquement votre travail et organise votre journée.</p>
-                </div>
-                <div class="feature-image">
-                    <div class="image-placeholder-text">
-                        
-                        <img src="website_images/Workflow.png" alt="Workflow">
-                    </div>
-                    <!-- <img src="website_images/imgWorkflow.png" alt="Workflow"> -->
-                </div>
+            <div class="feature-card">
+                <span class="feature-icon">⚙️</span>
+                <h3>Gestion Technique</h3>
+                <p>Système complet de références : Pièces (PRT), Dessins (DRW), Assemblages (ASM), et nomenclatures (BOM) avec gestion des priorités.</p>
             </div>
 
-            <div class="feature-item">
-                <div class="feature-content">
-                    <h3>Outils de Calcul</h3>
-                    <p>Suite complète de calculs mécaniques : roulements, couples, engrenages, contraintes et plus encore.</p>
-                </div>
-                <div class="feature-image">
-                    <div class="image-placeholder-text">
-                        
-                        <img src="website_images/Tools_manager.png" alt="Calculs">
-                    </div>
-                    <!-- <img src="URL_IMAGE_CALCULS" alt="Calculs"> -->
-                </div>
-            </div>
-
-            <div class="feature-item">
-                <div class="feature-content">
-                    <h3>Visualisateur 3D</h3>
-                    <p>Visualisez vos conceptions en temps réel avec un moteur 3D performant et des outils d'analyse intégrés.</p>
-                </div>
-                <div class="feature-image">
-                    <div class="image-placeholder-text">
-                        📸 Screenshot<br>Vue 3D
-                    </div>
-                    <!-- <img src="URL_IMAGE_3D" alt="Visualisateur 3D"> -->
-                </div>
+            <div class="feature-card">
+                <span class="feature-icon">✅</span>
+                <h3>Workflow de Validation</h3>
+                <p>Soumettez vos preuves de travail. Un système de revue permet aux managers de valider ou refuser les tâches pour garantir la qualité.</p>
             </div>
         </div>
     </section>
 
-    <section id="tools" class="full-feature">
-        <div class="full-feature-container">
-            <div class="full-feature-content">
-                <h2>Calculs Mécaniques Intelligents</h2>
-                <p>BEAVO intègre une suite complète d'outils de calcul mécanique conçus pour les ingénieurs. Obtenez des résultats instantanés et fiables.</p>
-                <ul class="feature-list">
-                    <li>Calcul de charge sur roulements avec dimensionnement automatique</li>
-                    <li>Calcul de couple et puissance pour vos transmissions</li>
-                    <li>Analyse de charge sur engrenages (droits, hélicoïdaux)</li>
-                    <li>Calcul de contraintes et résistance des matériaux</li>
-                    <li>Dimensionnement de boulonnerie et assemblages</li>
-                    <li>Export automatique des rapports de calcul</li>
-                </ul>
-            </div>
-            <div class="full-image-placeholder">
-                <div class="image-placeholder-text">
-                    📸 Grande capture d'écran<br>des outils de calcul en action<br>(tableau de résultats, graphiques...)
-                </div>
-                <!-- <img src="URL_IMAGE_CALCULS_FULL" alt="Calculs détaillés"> -->
-            </div>
-        </div>
-    </section>
+    <section id="gamification" class="preview-section">
+        <div class="preview-content">
+            <h2>La productivité devient un jeu</h2>
+            <p style="margin-top: 1rem; font-size: 1.1rem; opacity: 0.9;">
+                Ne voyez plus le travail comme une corvée. Avec Beavo, chaque tâche validée vous rapporte de l'expérience (XP).
+            </p>
 
-    <section id="demo" class="cta-section">
-        <div class="cta-content">
-            <h2>Prêt à Transformer Votre Conception ?</h2>
-            <p>Rejoignez les ingénieurs qui gagnent du temps avec BEAVO. Essayez gratuitement pendant 14 jours, sans carte bancaire.</p>
-            <a href="https://github.com/LzJLn/Beavo/releases/download/alpha/_beavosetup.exe" download class="btn btn-primary">Commencer l'essai gratuit</a>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h4>+XP</h4>
+                    <p>Gain par tâche</p>
+                </div>
+                <div class="stat-item">
+                    <h4>Niveaux</h4>
+                    <p>Progression continue</p>
+                </div>
+                <div class="stat-item">
+                    <h4>Preuves</h4>
+                    <p>Validation par l'image</p>
+                </div>
+            </div>
         </div>
     </section>
 
     <footer>
-        <div class="footer-container">
-            <div class="footer-brand">
-                <h3>BEAVO</h3>
-                <p>L'assistant IA qui révolutionne la conception produit pour les ingénieurs. Gagnez en efficacité avec nos outils intelligents.</p>
-            </div>
-            <div class="footer-links">
-                <h4>Produit</h4>
-                <a href="#features">Fonctionnalités</a>
-                <a href="#tools">Outils</a>
-                <a href="#">Tarifs</a>
-                <a href="#">Documentation</a>
-            </div>
-            <div class="footer-links">
-                <h4>Entreprise</h4>
-                <a href="#">À propos</a>
-                <a href="#">Blog</a>
-                <a href="#">Carrières</a>
-                <a href="#">Contact</a>
-            </div>
-            <div class="footer-links">
-                <h4>Support</h4>
-                <a href="#">Centre d'aide</a>
-                <a href="#">Tutoriels</a>
-                <a href="#">API</a>
-                <a href="#">Statut</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 BEAVO. Tous droits réservés.</p>
-        </div>
+        <p>&copy; 2025 Beavo Platform. Powered by Cloudflare Workers.</p>
     </footer>
+
 </body>
-
 </html>
-
-
-
-
-
-
